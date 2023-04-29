@@ -1,0 +1,82 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+/*
+메모리 :11816
+시간 80ms
+*/
+
+public class Main {
+
+   public static boolean[][] arr;
+    public static int min = 64;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int[] tmp = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        System.out.println(Arrays.toString(tmp));
+        int N = tmp[0];
+        int M = tmp[1];
+
+        arr = new boolean[N][M];
+
+        int sum = 0;
+
+        for (int i = 0; i < N; i++) {
+
+            String str = br.readLine();
+
+            for (int j = 0; j < M; j++) {
+                if (str.charAt(j) == 'W') {
+                    arr[i][j] = true;
+                }
+            }
+        }
+        // 최스 크기가 8 X 8 일 경우의 수가 1
+        int N_row = N - 7;
+        int M_col = M - 7;
+
+        // 0 ~ 7까지 총 8칸을 전달하므로 최대값에서 7을 뺀다.
+        for (int i = 0; i < N_row; i++) {
+            for (int j = 0; j < M_col; j++) {
+                chess(i, j);
+            }
+        }
+        System.out.println(min);
+
+    }
+
+    public static int chess(int x, int y) {
+
+        int count = 0;
+
+        boolean check = arr[x][y];
+
+        for (int i = x; i < x + 8; i++) {
+            for (int j = y; j < y + 8; j++) {
+                if (arr[i][j] != check) {
+                    count++;
+                }
+                // 다음 칸은 색이 바뀌므로 true라면 false로
+                check = !check;
+            }
+            check = !check;
+        }
+
+        // 첫 번째 색을 기준으로 바꾸어야 할 색의 수,
+        // 반대색의 수는 반대로 생각하면 64개의 체스 색 중 cnt개만큼 맞게 칠해져 있는 것이므로
+        // 고쳐야 하는 수는 64-cnt가 된다.
+        count = Math.min(count, 64 - count);
+
+        min = Math.min(min, count);
+
+        return min;
+    }
+
+
+
+}
